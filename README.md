@@ -1,0 +1,1 @@
+# Astoneti.Microservice.AutoService
