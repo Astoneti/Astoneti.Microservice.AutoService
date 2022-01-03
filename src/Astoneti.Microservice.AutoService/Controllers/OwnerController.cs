@@ -21,8 +21,7 @@ namespace Astoneti.Microservice.AutoService.Controllers
         }
 
         [HttpGet]
-        [ProducesResponseType(typeof(IEnumerable<OwnerModel>), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(IList<OwnerModel>), StatusCodes.Status200OK)]
         public IActionResult GetList()
         {
             return Ok(
@@ -53,8 +52,7 @@ namespace Astoneti.Microservice.AutoService.Controllers
         }
 
         [HttpPost]
-        [ProducesResponseType(typeof(OwnerModel), StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(OwnerModel), StatusCodes.Status201Created)]
         public IActionResult Post(OwnerPostModel model)
         {
             var item = _ownerService.Add(model);
@@ -68,20 +66,29 @@ namespace Astoneti.Microservice.AutoService.Controllers
             );
         }
 
-        [HttpPut]
-        [ProducesResponseType(typeof(OwnerModel), StatusCodes.Status200OK)]
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
-        public IActionResult Put(OwnerPutModel model)
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult Put(int id, OwnerPutModel model)
         {
+            if (id != model.CarId)
+            {
+                return BadRequest();
+            }
+
             var item = _ownerService.Edit(model);
 
-            var viewModel = _mapper.Map<OwnerModel>(item);
+            if (item == null)
+            {
+                return NotFound();
+            }
 
-            return Ok(viewModel);
+            return NoContent();
         }
 
         [HttpDelete("{id}")]
-        [ProducesResponseType(typeof(OwnerModel), StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         [ProducesResponseType(StatusCodes.Status404NotFound)]
         public IActionResult Delete(int id)
         {
@@ -91,6 +98,7 @@ namespace Astoneti.Microservice.AutoService.Controllers
             {
                 return NotFound();
             }
+
             return Ok();
         }
     }
