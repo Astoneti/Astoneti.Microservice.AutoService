@@ -15,11 +15,12 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
     {
         private readonly Mock<ICarService> _mockCarService;
         private readonly IMapper _mapper;
+
         private readonly CarController _controller;
 
         public CarControllerTests()
         {
-            _mockCarService = new Mock<ICarService>();
+            _mockCarService = new Mock<ICarService>(MockBehavior.Strict);
 
             _mapper = new MapperConfiguration(
                     config => config.AddMaps(
@@ -49,17 +50,17 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 }
             };
 
-            var expectedResultValue = _mapper.Map<IList<CarModel>>(dtos);
-
             _mockCarService
                 .Setup(x => x.GetList())
                 .Returns(dtos);
+
+            var expectedResultValue = _mapper.Map<IList<CarModel>>(dtos);
 
             // Act
             var result = _controller.GetList();
 
             // Assert
-            var okObjectResult = Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
             var resultValue = Assert.IsAssignableFrom<IList<CarModel>>(okObjectResult.Value);
 
@@ -81,21 +82,19 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Model = "CX-7",
             };
 
-            var expectedResultValue = _mapper.Map<CarModel>(dto);
-
             _mockCarService
                 .Setup(x => x.Get(id))
                 .Returns(dto);
+
+            var expectedResultValue = _mapper.Map<CarModel>(dto);
 
             // Act
             var result = _controller.Get(id);
 
             // Assert
-            var okObjectResult = Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
-            var resultValue = Assert.IsAssignableFrom<CarModel>(okObjectResult.Value);
-
-            Assert.IsType<OkObjectResult>(result as OkObjectResult);
+            var resultValue = Assert.IsType<CarModel>(okObjectResult.Value);
 
             resultValue
                 .Should()
@@ -117,14 +116,13 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
-            Assert.NotNull(result);
         }
 
         [Fact]
         public void Post_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Arrange           
-            var postModel = new CarPostModel
+            var model = new CarPostModel
             {
                 CarBrand = "Test Car",
             };
@@ -137,16 +135,22 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             };
 
             _mockCarService
-                .Setup(x => x.Add(postModel))
+                .Setup(x => x.Add(model))
                 .Returns(dto);
 
             var expectedResultValue = _mapper.Map<CarModel>(dto);
 
             // Act
-            var result = _controller.Post(postModel);
+            var result = _controller.Post(model);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+
+            Assert.Equal("Get", createdAtActionResult.ActionName);
+            Assert.Null(createdAtActionResult.ControllerName);
+            var idRouteValue = Assert.Single(createdAtActionResult.RouteValues);
+            Assert.Equal("id", idRouteValue.Key);
+            Assert.Equal(expectedResultValue.Id, idRouteValue.Value);
 
             var resultValue = Assert.IsType<CarModel>(createdAtActionResult.Value);
 
@@ -159,33 +163,91 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         public void Put_Should_UpdateCreatedItem()
         {
             // Arrange
-            var putModel = new CarPutModel
+            const int id = 1;
+
+            var model = new CarPutModel()
             {
-                CarBrand = "Test Car",
+                Id = id,
+                CarBrand = "Test New Car",
             };
 
             var dto = new CarDto()
             {
-                Id = 1,
+                Id = id,
                 CarBrand = "Test Car",
                 Model = "TestModel",
             };
 
             _mockCarService
-                .Setup(x => x.Edit(putModel))
+                .Setup(x => x.Edit(model))
                 .Returns(dto);
 
-            var expectedResultValue = _mapper.Map<CarModel>(dto);
-
             // Act
-            var result = _controller.Put(1, putModel);
+            var result = _controller.Put(id, model);
 
             // Assert
-            var createdResponse = Assert.IsType<OkObjectResult>(result);
+            var noContentResult = Assert.IsType<NoContentResult>(result);
+        }
 
-            var resultValue = Assert.IsType<CarModel>(createdResponse.Value);
+        [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnNotFound()
+        {
+            // Arrange
+            const int id = 1;
 
-            resultValue.Should().BeEquivalentTo(expectedResultValue);
+            var model = new CarPutModel()
+            {
+                Id = id,
+                CarBrand = "Test New Car",
+            };
+
+            var dto = new CarDto()
+            {
+                Id = id,
+                CarBrand = "Test Car",
+                Model = "TestModel",
+            };
+
+            _mockCarService
+                .Setup(_ => _.Edit(model))
+                .Returns(() => null);
+
+            // Act
+            var result = _controller.Put(id,model);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnBadRequest()
+        {
+            // Arrange
+            const int id = 1;
+
+            var model = new CarPutModel()
+            {
+                Id = 2,
+                CarBrand = "Test New Car",
+            };
+
+            var dto = new CarDto()
+            {
+                Id = id,
+                CarBrand = "Test Car",
+                Model = "TestModel",
+            };
+
+            _mockCarService
+                .Setup(_ => _.Edit(model))
+                .Returns(dto);
+                
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
         }
 
         [Fact]

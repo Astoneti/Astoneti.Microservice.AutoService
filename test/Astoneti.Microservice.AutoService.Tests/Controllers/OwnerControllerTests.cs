@@ -165,31 +165,86 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         {
             const int id =1;
             // Arrange
-            var putModel = new OwnerPutModel
+            var model = new OwnerPutModel
             {
+                CarId = id,
                 Name = "Test Owner",
             };
 
-            var ownerDto = new OwnerDto()
+            var dto = new OwnerDto()
             {
+                Id = id,
                 Name = "Test Owner",
             };
 
             _mockOwnerService
-                .Setup(x => x.Edit(putModel))
-                .Returns(ownerDto);
-
-            var expectedResultValue = _mapper.Map<OwnerModel>(ownerDto);
+                .Setup(x => x.Edit(model))
+                .Returns(dto);
 
             // Act
-            var result = _controller.Put(id, putModel);
+            var result = _controller.Put(id, model);
 
             // Assert
-            var createdResponse = Assert.IsType<OkObjectResult>(result);
+            var noContentResult = Assert.IsType<NoContentResult>(result);
+        }
 
-            var resultValue = Assert.IsType<OwnerModel>(createdResponse.Value);
+        [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnNotFound()
+        {
+            // Arrange
+            const int id = 1;
 
-            resultValue.Should().BeEquivalentTo(expectedResultValue);
+            var model = new OwnerPutModel()
+            {
+                CarId = id,
+                Name = "Test New Owner",
+            };
+
+            var dto = new OwnerDto()
+            {
+                Id = id,
+                Name = "Test Owner",
+            };
+
+            _mockOwnerService
+                .Setup(_ => _.Edit(model))
+                .Returns(() => null);
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnBadRequest()
+        {
+            // Arrange
+            const int id = 1;
+
+            var model = new OwnerPutModel()
+            {
+                CarId = 2,
+                Name = "Test New Owner",
+            };
+
+            var dto = new OwnerDto()
+            {
+                Id = id,
+                Name = "Test Owner",
+            };
+
+            _mockOwnerService
+                .Setup(_ => _.Edit(model))
+                .Returns(dto);
+
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
         }
 
         [Fact]
