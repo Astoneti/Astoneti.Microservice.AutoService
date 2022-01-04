@@ -163,6 +163,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Put_Should_UpdateCreatedItem()
         {
+            const int id =1;
             // Arrange
             var putModel = new OwnerPutModel
             {
@@ -181,7 +182,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var expectedResultValue = _mapper.Map<OwnerModel>(ownerDto);
 
             // Act
-            var result = _controller.Put(putModel);
+            var result = _controller.Put(id, putModel);
 
             // Assert
             var createdResponse = Assert.IsType<OkObjectResult>(result);

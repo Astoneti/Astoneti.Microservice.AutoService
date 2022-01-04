@@ -72,7 +72,7 @@ namespace Astoneti.Microservice.AutoService.Business
                 return null;
             }
 
-            _mapper.Map(item, entity);
+            _mapper.Map(item.CarId, entity.Id);
 
             entity = _ownerRepository.Update(entity);
 
