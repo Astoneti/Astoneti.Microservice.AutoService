@@ -47,17 +47,17 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 }
             };
 
-            var expectedResultValue = _mapper.Map<IList<OwnerModel>>(ownersDto);
-
             _mockOwnerService
                 .Setup(x => x.GetList())
                 .Returns(ownersDto);
+
+            var expectedResultValue = _mapper.Map<IList<OwnerModel>>(ownersDto);
 
             // Act
             var result = _controller.GetList();
 
             // Assert
-            var okObjectResult = Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
             var resultValue = Assert.IsAssignableFrom<IList<OwnerModel>>(okObjectResult.Value);
 
@@ -88,19 +88,19 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Name = "Test Owner"
             };
 
-            var expectedResultValue = _mapper.Map<OwnerDto>(ownerDto);
-
             _mockOwnerService
                 .Setup(x => x.Get(id))
                 .Returns(ownerDto);
+
+            var expectedResultValue = _mapper.Map<OwnerDto>(ownerDto);
 
             // Act
             var result = _controller.Get(id);
 
             // Assert
-            var okObjectResult = Assert.IsAssignableFrom<OkObjectResult>(result);
+            var okObjectResult = Assert.IsType<OkObjectResult>(result);
 
-            var resultValue = Assert.IsAssignableFrom<OwnerModel>(okObjectResult.Value);
+            var resultValue = Assert.IsType<OwnerModel>(okObjectResult.Value);
 
             Assert.IsType<OkObjectResult>(result as OkObjectResult);
 
@@ -124,7 +124,6 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
-            Assert.NotNull(result);
         }
 
         [Fact]
@@ -167,64 +166,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         }
 
         [Fact]
-        public void Put_Should_UpdateCreatedItem()
-        {
-            const int id =1;
-            // Arrange
-            var model = new OwnerPutModel
-            {
-                CarId = id,
-                Name = "Test Owner",
-            };
-
-            var dto = new OwnerDto()
-            {
-                Id = id,
-                Name = "Test Owner",
-            };
-
-            _mockOwnerService
-                .Setup(x => x.Edit(model))
-                .Returns(dto);
-
-            // Act
-            var result = _controller.Put(id, model);
-
-            // Assert
-            var noContentResult = Assert.IsType<NoContentResult>(result);
-        }
-
-        [Fact]
-        public void Put_WhenItemNotExists_Should_ReturnNotFound()
-        {
-            // Arrange
-            const int id = 1;
-
-            var model = new OwnerPutModel()
-            {
-                CarId = id,
-                Name = "Test New Owner",
-            };
-
-            var dto = new OwnerDto()
-            {
-                Id = id,
-                Name = "Test Owner",
-            };
-
-            _mockOwnerService
-                .Setup(_ => _.Edit(model))
-                .Returns(() => null);
-
-            // Act
-            var result = _controller.Put(id, model);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void Put_WhenItemNotExists_Should_ReturnBadRequest()
+        public void Put_WhenModelNotValid_Should_ReturnBadRequest()
         {
             // Arrange
             const int id = 1;
@@ -254,6 +196,57 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         }
 
         [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnNotFound()
+        {
+            // Arrange
+            const int id = 1;
+
+            var model = new OwnerPutModel()
+            {
+                CarId = id,
+                Name = "Test New Owner",
+            };
+
+            _mockOwnerService
+                .Setup(_ => _.Edit(model))
+                .Returns(() => null);
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Put_Should_UpdateCreatedItem()
+        {
+            const int id =1;
+            // Arrange
+            var model = new OwnerPutModel
+            {
+                CarId = id,
+                Name = "Test Owner",
+            };
+
+            var dto = new OwnerDto()
+            {
+                Id = id,
+                Name = "Test Owner",
+            };
+
+            _mockOwnerService
+                .Setup(x => x.Edit(model))
+                .Returns(dto);
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            var noContentResult = Assert.IsType<NoContentResult>(result);
+        }
+
+        [Fact]
         public void Delete_WhenItemIsNotExists_Should_ReturnNotFound()
         {
             // Arrange
@@ -267,8 +260,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var result = _controller.Delete(id);
 
             // Assert
-            Assert.IsAssignableFrom<NotFoundResult>(result);
-            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
@@ -285,7 +277,6 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var result = _controller.Delete(id);
 
             // Assert
-            Assert.IsAssignableFrom<StatusCodeResult>(result);
             Assert.IsType<OkResult>(result);
         }
     }

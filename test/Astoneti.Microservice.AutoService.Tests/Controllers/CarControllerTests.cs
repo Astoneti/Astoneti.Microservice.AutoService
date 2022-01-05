@@ -160,7 +160,48 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         }
 
         [Fact]
-        public void Put_Should_UpdateCreatedItem()
+        public void Put_WhenModelNotValid_Should_ReturnBadRequest()
+        {
+            // Arrange
+            const int id = 1;
+
+            var model = new CarPutModel()
+            {
+                Id = 2
+            };
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<BadRequestResult>(result);
+        }
+
+        [Fact]
+        public void Put_WhenItemNotExists_Should_ReturnNotFound()
+        {
+            // Arrange
+            const int id = 1;
+
+            var model = new CarPutModel()
+            {
+                Id = id,
+                CarBrand = "Test New Car",
+            };
+
+            _mockCarService
+                .Setup(x => x.Edit(model))
+                .Returns(() => null);
+
+            // Act
+            var result = _controller.Put(id, model);
+
+            // Assert
+            Assert.IsType<NotFoundResult>(result);
+        }
+
+        [Fact]
+        public void Put_Should_UpdateItem()
         {
             // Arrange
             const int id = 1;
@@ -190,67 +231,6 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         }
 
         [Fact]
-        public void Put_WhenItemNotExists_Should_ReturnNotFound()
-        {
-            // Arrange
-            const int id = 1;
-
-            var model = new CarPutModel()
-            {
-                Id = id,
-                CarBrand = "Test New Car",
-            };
-
-            var dto = new CarDto()
-            {
-                Id = id,
-                CarBrand = "Test Car",
-                Model = "TestModel",
-            };
-
-            _mockCarService
-                .Setup(_ => _.Edit(model))
-                .Returns(() => null);
-
-            // Act
-            var result = _controller.Put(id,model);
-
-            // Assert
-            Assert.IsType<NotFoundResult>(result);
-        }
-
-        [Fact]
-        public void Put_WhenItemNotExists_Should_ReturnBadRequest()
-        {
-            // Arrange
-            const int id = 1;
-
-            var model = new CarPutModel()
-            {
-                Id = 2,
-                CarBrand = "Test New Car",
-            };
-
-            var dto = new CarDto()
-            {
-                Id = id,
-                CarBrand = "Test Car",
-                Model = "TestModel",
-            };
-
-            _mockCarService
-                .Setup(_ => _.Edit(model))
-                .Returns(dto);
-                
-
-            // Act
-            var result = _controller.Put(id, model);
-
-            // Assert
-            Assert.IsType<BadRequestResult>(result);
-        }
-
-        [Fact]
         public void Delete_WhenItemIsNotExists_Should_ReturnNotFound()
         {
             // Arrange
@@ -264,8 +244,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var result = _controller.Delete(id);
 
             // Assert
-            Assert.IsAssignableFrom<NotFoundResult>(result);
-            Assert.NotNull(result);
+            Assert.IsType<NotFoundResult>(result);
         }
 
         [Fact]
@@ -282,7 +261,6 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var result = _controller.Delete(id);
 
             // Assert
-            Assert.IsAssignableFrom<StatusCodeResult>(result);
             Assert.IsType<OkResult>(result);
         }
     }
