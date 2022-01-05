@@ -131,27 +131,33 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         public void Post_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Arrange           
-            var postModel = new OwnerPostModel
+            var model = new OwnerPostModel
             {
                 Name = "Test Owner",
             };
 
-            var ownerDto = new OwnerDto
+            var dto = new OwnerDto
             {
                 Name = "Test Owner",
             };
 
             _mockOwnerService
-                .Setup(x => x.Add(postModel))
-                .Returns(ownerDto);
+                .Setup(x => x.Add(model))
+                .Returns(dto);
 
-            var expectedResultValue = _mapper.Map<OwnerModel>(ownerDto);
+            var expectedResultValue = _mapper.Map<OwnerModel>(dto);
 
             // Act
-            var result = _controller.Post(postModel);
+            var result = _controller.Post(model);
 
             // Assert
             var createdAtActionResult = Assert.IsType<CreatedAtActionResult>(result);
+
+            Assert.Equal("Get", createdAtActionResult.ActionName);
+            Assert.Null(createdAtActionResult.ControllerName);
+            var idRouteValue = Assert.Single(createdAtActionResult.RouteValues);
+            Assert.Equal("id", idRouteValue.Key);
+            Assert.Equal(expectedResultValue.Id, idRouteValue.Value);
 
             var resultValue = Assert.IsType<OwnerModel>(createdAtActionResult.Value);
 
