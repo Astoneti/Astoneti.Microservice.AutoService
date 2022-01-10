@@ -122,7 +122,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         public void Post_ValidObjectPassed_ReturnedResponseHasCreatedItem()
         {
             // Arrange           
-            var model = new CarPostModel
+            var model = new CarPostModel()
             {
                 CarBrand = "Test Car",
             };

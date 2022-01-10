@@ -2,6 +2,8 @@
 {
     public interface IOwnerEditDto
     {
+        public int Id { get; set; }
+
         public string Name { get; set; }
 
         // todo: think about list of car ids?

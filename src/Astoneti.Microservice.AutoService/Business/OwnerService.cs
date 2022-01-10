@@ -58,23 +58,23 @@ namespace Astoneti.Microservice.AutoService.Business
         {
             var entity = _mapper.Map<OwnerEntity>(item);
 
-            entity = _ownerRepository.Insert(entity);
+            _ownerRepository.Insert(entity);
 
             return _mapper.Map<OwnerDto>(entity);
         }
 
         public OwnerDto Edit(IOwnerEditDto item)
         {
-            var entity = _ownerRepository.Get(item.CarId);
+            var entity = _ownerRepository.Get(item.Id);
 
             if (entity == null)
             {
                 return null;
             }
 
-            _mapper.Map(item.CarId, entity.Id);
+            _mapper.Map(item, entity);
 
-            entity = _ownerRepository.Update(entity);
+            _ownerRepository.Update(entity);
 
             return _mapper.Map<OwnerDto>(entity);
         }

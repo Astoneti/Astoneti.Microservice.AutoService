@@ -17,6 +17,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         private readonly Mock<IOwnerService> _mockOwnerService;
         private readonly Mock<ICarService> _mockCarService;
         private readonly IMapper _mapper;
+
         private SearchController _controller;
 
         public SearchControllerTests()
@@ -40,9 +41,10 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfOwnersWithCarsList()
         {
+            // Arrange
             const int id = 1;
 
-            List<CarDto> carsDto = new()
+            var carsDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -51,7 +53,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 }
             };
 
-            List<OwnerDto> listDto = new()
+            var listDto = new List<OwnerDto>()
             {
                 new OwnerDto()
                 {
@@ -83,9 +85,10 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfOwnerWhereMoreThenOneCar()
         {
+            // Arrange
             const int id = 1;
 
-            List<CarDto> carsDto = new()
+            var carsDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -100,7 +103,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 }
             };
 
-            List<OwnerDto> listDto = new()
+            var listDto = new List<OwnerDto>()
             {
                 new OwnerDto()
                 {
@@ -132,6 +135,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarsWhithOwnersList()
         {
+            // Arrange
             const int id = 1;
 
             var ownerDto = new OwnerDto()
@@ -140,7 +144,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Name = "Test Owner"
             };
             
-            List<CarDto> listDto = new()
+            var listDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -173,7 +177,8 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarsWithoutOwners()
         {
-            List<CarDto> listDto = new()
+            // Arrange
+            var listDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -206,6 +211,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarsByLicensePlate()
         {
+            // Arrange
             const string number = "1111 Test";
             
             var testNumber = number;
@@ -216,7 +222,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Name = "Test Owner"
             };
 
-            List<CarDto> listDto = new()
+            var listDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -275,6 +281,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarBrandWhithOwner()
         {
+            // Arrange
             const string carBrand = "Test Brand";
 
             var testBrand = carBrand;
@@ -285,7 +292,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Name = "Test Owner"
             };
 
-            List<CarDto> listDto = new()
+            var listDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -364,6 +371,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarsByCarModel()
         {
+            // Arrange
             const string model = "Test Model";
 
             var testModel = model;
@@ -374,7 +382,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
                 Name = "Test Owner"
             };
 
-            List<CarDto> listDto = new()
+            var listDto = new List<CarDto>()
             {
                 new CarDto()
                 {
@@ -413,6 +421,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_WhenParametersIsValid_Should_ReturnExpectedResultOfCarsWhithOwnersById()
         {
+            // Arrange
             const int id = 1;
 
             var item = new CarDto()
@@ -444,9 +453,8 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
         [Fact]
         public void Get_CarsWhithOwners_Should_ReturnNotFound()
         {
-            const int id = 1;
-
             // Arrange
+            const int id = 1;
 
             _mockCarService
                 .Setup(x => x.GetCarsWhithOwners(id))
@@ -457,7 +465,6 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
 
             // Assert
             Assert.IsType<NotFoundResult>(result);
-            Assert.NotNull(result);
         }
     }
 }

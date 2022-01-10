@@ -15,6 +15,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
     {
         private readonly Mock<IOwnerService> _mockOwnerService;
         private readonly IMapper _mapper;
+
         private readonly OwnerController _controller;
 
         public OwnerControllerTests()
@@ -72,7 +73,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             // Arrange
             const int id = 1;
 
-            List<CarDto> carsDto = new()
+            var carsDto = new List<CarDto>()
             {
                 new CarDto()
                 {

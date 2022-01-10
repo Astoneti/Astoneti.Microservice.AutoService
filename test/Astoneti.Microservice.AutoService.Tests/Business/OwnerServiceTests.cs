@@ -1,5 +1,4 @@
 ﻿using Astoneti.Microservice.AutoService.Business;
-using Astoneti.Microservice.AutoService.Business.Contracts;
 using Astoneti.Microservice.AutoService.Business.Models;
 using Astoneti.Microservice.AutoService.Data.Contracts;
 using Astoneti.Microservice.AutoService.Data.Entities;
@@ -12,16 +11,16 @@ using Xunit;
 
 namespace Astoneti.Microservice.AutoService.Tests.Business
 {
-    public class CarServiceTests
+    public class OwnerServiceTests
     {
-        private readonly Mock<ICarRepository> _mockCarRepository;
+        private readonly Mock<IOwnerRepository> _mockOwnerRepository;
         private readonly IMapper _mapper;
 
-        private readonly CarService _service;
+        private readonly OwnerService _service;
 
-        public CarServiceTests()
+        public OwnerServiceTests()
         {
-            _mockCarRepository = new Mock<ICarRepository>();
+            _mockOwnerRepository = new Mock<IOwnerRepository>();
 
             _mapper = new MapperConfiguration(
                     cfg => cfg.AddMaps(
@@ -30,8 +29,8 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
                 )
                 .CreateMapper();
 
-            _service = new CarService(
-               _mockCarRepository.Object,
+            _service = new OwnerService(
+               _mockOwnerRepository.Object,
                _mapper
            );
         }
@@ -40,21 +39,20 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
         public void GetList_Should_ReturnExpectedResult()
         {
             // Arrange
-            var entities = new List<CarEntity>()
+            var entities = new List<OwnerEntity>()
             {
-                new CarEntity() {
+                new OwnerEntity()
+                {
                     Id = 1,
-                    CarBrand = "Test Car",
-                    Model = "TestModel",
-                    LicensePlate = "Test Plate"
+                    Name = "Test Owner"
                 },
             };
 
-            _mockCarRepository
+            _mockOwnerRepository
                 .Setup(x => x.GetList())
                 .Returns(entities);
 
-            var expectedResult = _mapper.Map<List<CarDto>>(entities);
+            var expectedResult = _mapper.Map<List<OwnerDto>>(entities);
 
             // Act
             var result = _service.GetList();
@@ -71,18 +69,17 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
             // Arrange
             const int id = 1;
 
-            var entity = new CarEntity()
+            var entity = new OwnerEntity()
             {
                 Id = id,
-                CarBrand = "Test Car",
-                Model = "TestModel",
+                Name = "Test Owner",
             };
 
-            _mockCarRepository
+            _mockOwnerRepository
                 .Setup(x => x.Get(id))
                 .Returns(entity);
 
-            var expectedResult = _mapper.Map<CarDto>(entity);
+            var expectedResult = _mapper.Map<OwnerDto>(entity);
 
             // Act
             var result = _service.Get(id);
@@ -97,55 +94,55 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
         public void Add_Should_CreateNewItem()
         {
             // Arrange
-            var item = new FakeCarAddDto()
+            var item = new FakeOwnerAddDto()
             {
-                CarBrand = "Test CarBrand",
-                Model = "Test Model"
+                Name = "Test Owner"
             };
 
-            var entity = _mapper.Map<CarEntity>(item);
-
-            _mockCarRepository
-                .Setup(x => x.Insert(entity))
-                .Returns(entity);
-
-            var expectedResult = _mapper.Map<CarDto>(entity);
+            var entity = _mapper.Map<OwnerEntity>(item);
 
             // Act
+            _mockOwnerRepository
+               .Setup(x => x.Insert(entity))
+               .Returns(entity);
+
+            var expectedResult = _mapper.Map<OwnerDto>(entity);
+
             var result = _service.Add(item);
 
             // Assert
             result
                 .Should()
                 .BeEquivalentTo(expectedResult);
+
         }
 
         [Fact]
         public void Edit_WhenItemIsNull_Should_ReturnNull()
         {
             // Arrange
-            var dto = new CarDto()
+            const int id = 1;
+
+            var item = new FakeOwnerEditDto()
             {
-                Id = 1,
-                CarBrand = "Test Car",
-                Model = "Test Car"
+                Id = id,
+                Name = "Test Owner",
             };
 
-            var expectedItem = new CarEntity()
+            var entity = new OwnerEntity()
             {
-                Id = 1,
-                CarBrand = "Test New Car",
-                Model = "Test New Car"
+                Id = id,
+                Name = "Test New Owner"
             };
 
-            _mockCarRepository
-                .Setup(x => x.Get(dto.Id))
+            _mockOwnerRepository
+                .Setup(x => x.Get(id))
                 .Returns(() => null);
 
-            var editDto = _mapper.Map<ICarEditDto>(expectedItem);
+            _mapper.Map<OwnerDto>(entity);
 
             // Act
-            var result = _service.Edit(editDto);
+            var result = _service.Edit(item);
 
             // Assert
             Assert.Null(result);
@@ -157,28 +154,25 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
             // Arrange
             const int id = 1;
 
-            var item = new FakeCarEditDto()
+            var item = new FakeOwnerEditDto()
             {
                 Id = id,
-                CarBrand = "Test Brand",
-                Model = "Test Model",
-                LicensePlate = "Test Plate",
-                OwnerId = 1
+                Name = "Test Owner"
             };
 
-            var entity = _mapper.Map<CarEntity>(item);
+            var entity = _mapper.Map<OwnerEntity>(item);
 
-            _mockCarRepository
-               .Setup(x => x.Get(id))
-               .Returns(entity);
+            _mockOwnerRepository
+                .Setup(x => x.Get(id))
+                .Returns(entity);
 
             _mapper.Map(item, entity);
 
-            _mockCarRepository
+            _mockOwnerRepository
                 .Setup(x => x.Update(entity))
                 .Returns(entity);
 
-            var expectedResult = _mapper.Map<CarDto>(entity);
+            var expectedResult = _mapper.Map<OwnerDto>(entity);
 
             // Act
             var result = _service.Edit(item);
@@ -195,7 +189,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
             // Arrange
             const int id = 1;
 
-            _mockCarRepository
+            _mockOwnerRepository
                 .Setup(x => x.Delete(id))
                 .Returns(true);
 
@@ -207,3 +201,4 @@ namespace Astoneti.Microservice.AutoService.Tests.Business
         }
     }
 }
+
