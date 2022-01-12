@@ -15,7 +15,7 @@ namespace Astoneti.Microservice.AutoService.Business.Mappings
 
             CreateMap<IOwnerAddDto, OwnerEntity>().ReverseMap();
 
-            CreateMap<ICarEditDto, OwnerEntity>().ReverseMap();
+            CreateMap<IOwnerEditDto, OwnerEntity>().ReverseMap();
         }
     }
 }

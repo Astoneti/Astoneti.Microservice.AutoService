@@ -94,7 +94,7 @@ namespace Astoneti.Microservice.AutoService.Business
         {
             var entity = _mapper.Map<CarEntity>(item);
 
-            entity = _carRepository.Insert(entity);
+            _carRepository.Insert(entity);
 
             return _mapper.Map<CarDto>(entity);
         }
@@ -110,7 +110,7 @@ namespace Astoneti.Microservice.AutoService.Business
 
             _mapper.Map(item, entity);
 
-            entity = _carRepository.Update(entity);
+            _carRepository.Update(entity);
 
             return _mapper.Map<CarDto>(entity);
         }
