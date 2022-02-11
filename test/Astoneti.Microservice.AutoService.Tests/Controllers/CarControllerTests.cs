@@ -227,7 +227,7 @@ namespace Astoneti.Microservice.AutoService.Tests.Controllers
             var result = _controller.Put(id, model);
 
             // Assert
-            var noContentResult = Assert.IsType<NoContentResult>(result);
+            var okResult = Assert.IsType<OkObjectResult>(result);
         }
 
         [Fact]

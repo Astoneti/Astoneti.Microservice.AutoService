@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.31605.320
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.32112.339
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{F7EDC84C-ADCA-4C63-B1A0-20F3EEAA30A8}"
 EndProject
@@ -11,7 +11,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Astoneti.Microservice.AutoS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Astoneti.Microservice.AutoService.Tests", "test\Astoneti.Microservice.AutoService.Tests\Astoneti.Microservice.AutoService.Tests.csproj", "{E8D5B561-6C4D-4992-AC88-B3D5B0A61964}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Astoneti.Microservice.AutoService.IntegrationTests", "test\Astoneti.Microservice.AutoService.IntegrationTests\Astoneti.Microservice.AutoService.IntegrationTests.csproj", "{C32092A8-6B54-4550-BD09-0F44333A32B6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Astoneti.Microservice.AutoService.IntegrationTests", "test\Astoneti.Microservice.AutoService.IntegrationTests\Astoneti.Microservice.AutoService.IntegrationTests.csproj", "{C32092A8-6B54-4550-BD09-0F44333A32B6}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

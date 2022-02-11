@@ -56,12 +56,14 @@ namespace Astoneti.Microservice.AutoService.Contollers
         {
             var item = _carService.Add(model);
 
+            var newModel = _mapper.Map<CarModel>(
+                item
+            );
+
             return CreatedAtAction(
                 nameof(Get),
                 new { id = item.Id },
-                _mapper.Map<CarModel>(
-                    item
-                )
+                newModel
             );
         }
 
@@ -83,7 +85,7 @@ namespace Astoneti.Microservice.AutoService.Contollers
                 return NotFound();
             }
 
-            return NoContent();
+            return Ok(item);
         }
 
         [HttpDelete("{id}")]

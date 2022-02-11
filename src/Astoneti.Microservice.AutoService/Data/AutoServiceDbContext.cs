@@ -5,8 +5,8 @@ namespace Astoneti.Microservice.AutoService.Data
 {
     public class AutoServiceDbContext : DbContext
     {
-        public AutoServiceDbContext(DbContextOptions<AutoServiceDbContext> options)
-            : base(options)
+        public AutoServiceDbContext(DbContextOptions dbContextOptions)
+            : base(dbContextOptions)
         {
 
         }

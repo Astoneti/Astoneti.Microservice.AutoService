@@ -2,8 +2,6 @@ using Astoneti.Microservice.AutoService.Business;
 using Astoneti.Microservice.AutoService.Business.Contracts;
 using Astoneti.Microservice.AutoService.Data;
 using Astoneti.Microservice.AutoService.Data.Contracts;
-using Astoneti.Microservice.AutoService.Mappings;
-using AutoMapper;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.EntityFrameworkCore;
